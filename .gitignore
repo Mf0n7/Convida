@@ -23,6 +23,7 @@ out/
 .turbo/
 *.tsbuildinfo
 .pnpm-store/
+package-lock.json
 
 # ---- Env / secrets ----
 .env
