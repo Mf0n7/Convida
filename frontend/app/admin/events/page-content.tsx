@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 
 import { AdminShell } from "@/components/admin/shell";
+import { QueryState } from "@/components/shared/query-state";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAdminEvents } from "@/hooks/use-admin";
@@ -12,7 +13,7 @@ import { formatDateTime } from "@/lib/utils";
 
 export default function AdminEventsPage() {
   const [query, setQuery] = useState("");
-  const { data, isLoading } = useAdminEvents();
+  const { data, isLoading, isError } = useAdminEvents();
   const events = useMemo(() => data ?? [], [data]);
 
   const filtered = useMemo(() => {
@@ -48,71 +49,73 @@ export default function AdminEventsPage() {
         </div>
       </div>
 
-      {isLoading ? (
-        <p className="text-muted-foreground">Carregando…</p>
-      ) : filtered.length === 0 ? (
-        <Card>
-          <CardContent className="py-16 text-center text-sm text-muted-foreground">
-            {events.length === 0
-              ? "Nenhum evento cadastrado ainda."
-              : "Nenhum evento encontrado para essa busca."}
-          </CardContent>
-        </Card>
-      ) : (
-        <Card>
-          <CardContent className="overflow-x-auto p-0">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="px-4 py-3 font-medium">Evento</th>
-                  <th className="px-4 py-3 font-medium">Dono</th>
-                  <th className="px-4 py-3 font-medium">Data do evento</th>
-                  <th className="px-4 py-3 font-medium">Confirmados</th>
-                  <th className="px-4 py-3 font-medium">Convidados</th>
-                  <th className="px-4 py-3 font-medium">Presentes</th>
-                  <th className="px-4 py-3 font-medium">Criado em</th>
-                  <th className="px-4 py-3 font-medium">Atualizado em</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((event) => (
-                  <tr
-                    key={event.id}
-                    className="border-b border-border last:border-0"
-                  >
-                    <td className="px-4 py-3 font-medium">
-                      <Link
-                        href={`/admin/events/${event.uuid}`}
-                        className="hover:underline"
+      <QueryState isLoading={isLoading} isError={isError} data={data}>
+        {() =>
+          filtered.length === 0 ? (
+            <Card>
+              <CardContent className="py-16 text-center text-sm text-muted-foreground">
+                {events.length === 0
+                  ? "Nenhum evento cadastrado ainda."
+                  : "Nenhum evento encontrado para essa busca."}
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent className="overflow-x-auto p-0">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-left text-muted-foreground">
+                      <th className="px-4 py-3 font-medium">Evento</th>
+                      <th className="px-4 py-3 font-medium">Dono</th>
+                      <th className="px-4 py-3 font-medium">Data do evento</th>
+                      <th className="px-4 py-3 font-medium">Confirmados</th>
+                      <th className="px-4 py-3 font-medium">Convidados</th>
+                      <th className="px-4 py-3 font-medium">Presentes</th>
+                      <th className="px-4 py-3 font-medium">Criado em</th>
+                      <th className="px-4 py-3 font-medium">Atualizado em</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((event) => (
+                      <tr
+                        key={event.id}
+                        className="border-b border-border last:border-0"
                       >
-                        {event.title}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3">
-                      <p className="font-medium">{event.owner_name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {event.owner_email}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {formatDateTime(event.starts_at)}
-                    </td>
-                    <td className="px-4 py-3">{event.confirmations}</td>
-                    <td className="px-4 py-3">{event.total_guests}</td>
-                    <td className="px-4 py-3">{event.gifts_count}</td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {formatDateTime(event.created_at)}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {formatDateTime(event.updated_at)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-      )}
+                        <td className="px-4 py-3 font-medium">
+                          <Link
+                            href={`/admin/events/${event.uuid}`}
+                            className="hover:underline"
+                          >
+                            {event.title}
+                          </Link>
+                        </td>
+                        <td className="px-4 py-3">
+                          <p className="font-medium">{event.owner_name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {event.owner_email}
+                          </p>
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {formatDateTime(event.starts_at)}
+                        </td>
+                        <td className="px-4 py-3">{event.confirmations}</td>
+                        <td className="px-4 py-3">{event.total_guests}</td>
+                        <td className="px-4 py-3">{event.gifts_count}</td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {formatDateTime(event.created_at)}
+                        </td>
+                        <td className="px-4 py-3 text-muted-foreground">
+                          {formatDateTime(event.updated_at)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </CardContent>
+            </Card>
+          )
+        }
+      </QueryState>
     </AdminShell>
   );
 }
