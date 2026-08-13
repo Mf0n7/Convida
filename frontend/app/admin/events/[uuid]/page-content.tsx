@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import { AdminShell } from "@/components/admin/shell";
 import { BackButton } from "@/components/shared/back-button";
+import { QueryState } from "@/components/shared/query-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminEvent } from "@/hooks/use-admin";
 import { cn, formatBRL, formatDateTime } from "@/lib/utils";
@@ -47,11 +48,13 @@ export default function AdminEventDetailPage() {
     <AdminShell>
       <BackButton href="/admin/events" />
 
-      {isLoading ? (
-        <p className="text-muted-foreground">Carregando…</p>
-      ) : isError || !event ? (
-        <p className="text-destructive">Evento não encontrado.</p>
-      ) : (
+      <QueryState
+        isLoading={isLoading}
+        isError={isError}
+        data={event}
+        errorFallback={<p className="text-destructive">Evento não encontrado.</p>}
+      >
+        {(event) => (
         <div className="space-y-6">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -327,7 +330,8 @@ export default function AdminEventDetailPage() {
             )}
           </Card>
         </div>
-      )}
+        )}
+      </QueryState>
     </AdminShell>
   );
 }
