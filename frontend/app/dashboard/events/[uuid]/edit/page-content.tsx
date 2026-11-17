@@ -16,6 +16,7 @@ import { FormsPanel } from "@/components/events/forms-panel";
 import { GiftPanel } from "@/components/events/gift-panel";
 import { InvitePanel } from "@/components/events/invite-panel";
 import { NominalInvitesPanel } from "@/components/events/nominal-invites-panel";
+import { QueryState } from "@/components/shared/query-state";
 import { Button } from "@/components/ui/button";
 import { apiErrorMessage } from "@/lib/api";
 import {
@@ -89,11 +90,13 @@ export default function EditEventPage() {
     <DashboardShell>
       <BackButton href="/dashboard" />
 
-      {isLoading ? (
-        <p className="text-muted-foreground">Carregando…</p>
-      ) : isError || !event ? (
-        <p className="text-destructive">Evento não encontrado.</p>
-      ) : (
+      <QueryState
+        isLoading={isLoading}
+        isError={isError}
+        data={event}
+        errorFallback={<p className="text-destructive">Evento não encontrado.</p>}
+      >
+        {(event) => (
         <>
           <div className="mb-5">
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -168,7 +171,8 @@ export default function EditEventPage() {
             </section>
           </div>
         </>
-      )}
+        )}
+      </QueryState>
     </DashboardShell>
   );
 }
