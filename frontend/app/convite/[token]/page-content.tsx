@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { FormsSection } from "@/components/invite/forms-section";
 import { GiftSection } from "@/components/invite/gift-section";
 import { Badge } from "@/components/ui/badge";
 import { Centered } from "@/components/shared/centered";
@@ -228,6 +229,7 @@ export default function NominalInvitePage() {
           )}
 
           <GiftSection token={token} />
+          <FormsSection token={token} />
         </CardContent>
       </Card>
       <PoweredBy />

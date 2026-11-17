@@ -8,6 +8,7 @@ import posthog from "posthog-js";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
+import { FormsSection } from "@/components/invite/forms-section";
 import { GiftSection } from "@/components/invite/gift-section";
 import { InvitePageSkeleton } from "@/features/invitations/components/invite-page-skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -217,6 +218,7 @@ export default function InvitePage() {
           )}
 
           <GiftSection token={token} />
+          <FormsSection token={token} />
         </CardContent>
       </Card>
       <PoweredBy />

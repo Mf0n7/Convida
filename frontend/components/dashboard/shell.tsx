@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarHeart, CreditCard, LogOut, Shield, User, Menu, X } from "lucide-react";
+import { CalendarHeart, ClipboardList, CreditCard, LogOut, Shield, User, Menu, X } from "lucide-react";
 import Link from "next/link";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -20,6 +20,12 @@ const NAV = [
     label: "Meus eventos",
     icon: CalendarHeart,
     exact: true,
+  },
+  {
+    href: "/dashboard/forms",
+    label: "Formulários",
+    icon: ClipboardList,
+    exact: false,
   },
   {
     href: "/dashboard/billing",

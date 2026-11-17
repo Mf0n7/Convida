@@ -3,6 +3,7 @@ export * from "./auth";
 export * from "./events";
 export * from "./rsvp";
 export * from "./gifts";
+export * from "./forms";
 export * from "./billing";
 export * from "./invitations";
 export * from "./admin";

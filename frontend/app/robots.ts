@@ -8,7 +8,14 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // Áreas privadas / com token não devem ser indexadas.
-      disallow: ["/dashboard", "/invite", "/convite", "/reset-password", "/forgot-password"],
+      disallow: [
+        "/dashboard",
+        "/invite",
+        "/convite",
+        "/formulario",
+        "/reset-password",
+        "/forgot-password",
+      ],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,

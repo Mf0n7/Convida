@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { Gift, LinkIcon, Pencil, ShieldAlert, Trash2, Users } from "lucide-react";
+import { ClipboardList, Gift, LinkIcon, Pencil, ShieldAlert, Trash2, Users } from "lucide-react";
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import { useLenis } from "@/context/lenis";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { DashboardShell } from "@/components/dashboard/shell";
 import { EventForm } from "@/components/events/event-form";
+import { FormsPanel } from "@/components/events/forms-panel";
 import { GiftPanel } from "@/components/events/gift-panel";
 import { InvitePanel } from "@/components/events/invite-panel";
 import { NominalInvitesPanel } from "@/components/events/nominal-invites-panel";
@@ -28,6 +29,7 @@ const SECTIONS = [
   { id: "convite", label: "Link", icon: LinkIcon },
   { id: "nominais", label: "Convites nominais", icon: Users },
   { id: "presentes", label: "Lista de presentes", icon: Gift },
+  { id: "formularios", label: "Formulários", icon: ClipboardList },
   { id: "dados", label: "Dados do evento", icon: Pencil },
   { id: "seguranca", label: "Segurança", icon: ShieldAlert },
 ];
@@ -134,6 +136,9 @@ export default function EditEventPage() {
             <section id="presentes" className="scroll-mt-40">
               <GiftPanel uuid={uuid} />
             </section>
+            <section id="formularios" className="scroll-mt-40">
+              <FormsPanel uuid={uuid} />
+            </section>
             <section id="dados" className="scroll-mt-40">
               <EventForm
                 event={event}
@@ -148,8 +153,8 @@ export default function EditEventPage() {
                   <ShieldAlert className="size-4.5" /> Área de segurança
                 </h2>
                 <p className="mb-4 text-sm text-muted-foreground">
-                  Excluir o evento remove convites, confirmações e lista de
-                  presentes associados. Essa ação não pode ser desfeita.
+                  Excluir o evento remove convites, confirmações, lista de
+                  presentes e formulários associados. Essa ação não pode ser desfeita.
                 </p>
                 <Button
                   variant="outline"

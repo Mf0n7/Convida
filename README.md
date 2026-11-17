@@ -42,6 +42,25 @@ Capacidade do evento = nº de confirmados (acompanhantes contam).
 - **Pago (faixa):** ver os *nomes* dos confirmados acima de 20 — revela as primeiras N confirmações
   até a capacidade da faixa (avulsa para 1 evento, ou assinatura para eventos ilimitados na faixa).
 - **Addon separado:** lista de presentes (R$ 5 por evento, ou incluída em assinaturas ativas).
+- **Sempre grátis:** formulários personalizados (estilo Google Forms) — vinculados a um evento ou avulsos.
+
+## Formulários
+
+Qualquer usuário cria formulários com perguntas tipadas (resposta curta, parágrafo, e-mail,
+telefone, número, múltipla escolha, caixas de seleção, lista suspensa, escala linear, data,
+hora, sim/não), publica e acompanha um relatório de respostas (agregado por pergunta,
+respostas individuais e exportação CSV).
+
+- **De evento:** criado na página do evento (`/dashboard/events/<uuid>/edit#formularios`).
+  Aparece dentro do convite público; pelo convite nominal o convidado é identificado e
+  responde uma vez só (configurável).
+- **Avulso:** criado em `/dashboard/forms`, sem evento. Qualquer pessoa com o link direto
+  (`/formulario/<share_token>`) responde.
+- Limites: 10 formulários por evento, 20 avulsos por usuário, 50 perguntas por formulário,
+  30 opções por pergunta. Escrita anônima passa pelo mesmo rate limit do RSVP.
+- API: `GET/POST /api/v1/forms/`, `/api/v1/events/<uuid>/forms/`, `/api/v1/forms/<id>/`
+  (`status/`, `duplicate/`, `report/`, `responses/`, `export/`) e rotas públicas
+  `/api/v1/public/forms/<share_token>/` e `/api/v1/public/<token>/forms/`.
 
 ## Desenvolvimento local
 
