@@ -21,6 +21,7 @@ from .models import (
     FormResponse,
     Question,
 )
+from .qr import build_qr_pdf, build_qr_png
 from .reports import build_csv, build_report
 from .serializers import (
     FormListSerializer,
@@ -30,6 +31,7 @@ from .serializers import (
     PublicFormSerializer,
     PublicFormSummarySerializer,
     SubmitResponseSerializer,
+    public_form_url,
 )
 from .validation import AnswerError, clean_answer
 
@@ -239,6 +241,41 @@ class FormExportView(APIView):
         response = HttpResponse(build_csv(form), content_type="text/csv; charset=utf-8")
         response["Content-Disposition"] = f'attachment; filename="{filename}"'
         return response
+
+
+@extend_schema(tags=[TAG])
+class FormQrPngView(APIView):
+    """QR code do link público, PNG limpo (sem moldura)."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        form = _owned_form(request, pk)
+        response = HttpResponse(build_qr_png(public_form_url(form)), content_type="image/png")
+        response["Content-Disposition"] = f'attachment; filename="{_qr_basename(form)}.png"'
+        return response
+
+
+@extend_schema(tags=[TAG])
+class FormQrPdfView(APIView):
+    """QR code em PDF A4 com a moldura do Convida e o título do formulário."""
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        form = _owned_form(request, pk)
+        pdf = build_qr_pdf(
+            url=public_form_url(form),
+            title=form.title,
+            subtitle=form.event.title if form.event_id else "",
+        )
+        response = HttpResponse(pdf, content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="{_qr_basename(form)}.pdf"'
+        return response
+
+
+def _qr_basename(form: Form) -> str:
+    return f"{slugify(form.title) or 'formulario'}-qrcode"
 
 
 # ------------------------------------------------------------------ Público

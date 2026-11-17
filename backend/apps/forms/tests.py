@@ -450,3 +450,42 @@ def test_apagar_evento_apaga_formularios_vinculados_mas_nao_avulsos(api, event, 
     api.post("/api/v1/forms/", {"title": "Avulso"}, format="json")
     event.delete()
     assert list(Form.objects.filter(owner=owner).values_list("title", flat=True)) == ["Avulso"]
+
+
+# ------------------------------------------------------------------- QR code
+def test_qr_png_e_pdf_do_formulario(api, event):
+    form = create_form(api, event, publish=False)
+
+    png = api.get(f"/api/v1/forms/{form.pk}/qr.png")
+    assert png.status_code == 200
+    assert png["Content-Type"] == "image/png"
+    assert png.content[:8] == b"\x89PNG\r\n\x1a\n"
+    assert "qrcode.png" in png["Content-Disposition"]
+
+    pdf = api.get(f"/api/v1/forms/{form.pk}/qr.pdf")
+    assert pdf.status_code == 200
+    assert pdf["Content-Type"] == "application/pdf"
+    assert pdf.content[:5] == b"%PDF-"
+    assert len(pdf.content) > 2000
+
+
+def test_qr_png_decodifica_para_o_link_publico(api, event):
+    from io import BytesIO
+
+    from PIL import Image
+
+    form = create_form(api, event, publish=False)
+    detail = api.get(f"/api/v1/forms/{form.pk}/").data
+    png = api.get(f"/api/v1/forms/{form.pk}/qr.png").content
+    image = Image.open(BytesIO(png))
+    assert image.size[0] >= 900 and image.size[0] == image.size[1]
+    assert detail["public_url"].endswith(f"/formulario/{form.share_token}")
+
+
+def test_qr_de_outro_usuario_e_404(api, event, django_user_model):
+    form = create_form(api, event, publish=False)
+    other = django_user_model.objects.create_user(email="y@convida.app", password="Senha!123")
+    client = APIClient()
+    client.force_authenticate(other)
+    assert client.get(f"/api/v1/forms/{form.pk}/qr.png").status_code == 404
+    assert client.get(f"/api/v1/forms/{form.pk}/qr.pdf").status_code == 404

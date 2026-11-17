@@ -5,6 +5,8 @@ from .views import (
     FormDuplicateView,
     FormExportView,
     FormListCreateView,
+    FormQrPdfView,
+    FormQrPngView,
     FormReportView,
     FormResponseDeleteView,
     FormResponseListView,
@@ -34,6 +36,8 @@ urlpatterns = [
         name="form-response-delete",
     ),
     path("forms/<int:pk>/export/", FormExportView.as_view(), name="form-export"),
+    path("forms/<int:pk>/qr.png", FormQrPngView.as_view(), name="form-qr-png"),
+    path("forms/<int:pk>/qr.pdf", FormQrPdfView.as_view(), name="form-qr-pdf"),
     # Público — link direto do formulário (avulso ou de evento)
     path("public/forms/<uuid:share_token>/", PublicSharedFormView.as_view(), name="public-shared"),
     path(

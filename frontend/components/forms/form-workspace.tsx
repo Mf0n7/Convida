@@ -23,6 +23,7 @@ import { FormStatusBadge } from "@/components/events/forms-panel";
 import { FormBuilder, validateQuestions } from "@/components/forms/form-builder";
 import { FormReport } from "@/components/forms/form-report";
 import { FormSettings, type FormSettingsValues } from "@/components/forms/form-settings";
+import { QrDialog } from "@/components/forms/qr-dialog";
 import { Button } from "@/components/ui/button";
 import { ApiError, apiErrorMessage } from "@/lib/api";
 import { useForm, useSetFormStatus, useUpdateForm } from "@/hooks/use-forms";
@@ -237,6 +238,12 @@ export function FormWorkspace({ formId, backHref, backLabel }: Props) {
                   </a>
                 </Button>
               )}
+              <QrDialog
+                formId={formId}
+                title={form.title}
+                publicUrl={form.public_url}
+                disabled={form.status === "draft"}
+              />
               <Button type="button" size="sm" onClick={save} disabled={!dirty || update.isPending}>
                 <Save /> {update.isPending ? "Salvando…" : "Salvar"}
               </Button>

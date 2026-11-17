@@ -146,9 +146,9 @@ export function useDeleteResponse(formId: number) {
   });
 }
 
-/** Baixa o CSV autenticado e dispara o download no navegador. */
-export async function downloadFormCsv(formId: number, filename: string) {
-  const res = await fetch(`${API_BASE_URL}/forms/${formId}/export/`, {
+/** Busca um arquivo autenticado (CSV, PNG, PDF) e devolve o Blob. */
+export async function fetchAuthenticatedBlob(path: string): Promise<Blob> {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     headers: { Authorization: `Bearer ${tokenStore.access ?? ""}` },
   });
   if (!res.ok) {
@@ -160,7 +160,11 @@ export async function downloadFormCsv(formId: number, filename: string) {
     }
     throw new ApiError(res.status, data);
   }
-  const blob = await res.blob();
+  return res.blob();
+}
+
+/** Dispara o download de um Blob no navegador. */
+export function saveBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -169,6 +173,27 @@ export async function downloadFormCsv(formId: number, filename: string) {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
+
+/** Baixa o CSV de respostas. */
+export async function downloadFormCsv(formId: number, filename: string) {
+  saveBlob(await fetchAuthenticatedBlob(`/forms/${formId}/export/`), filename);
+}
+
+/** QR code do link público: PNG limpo ou PDF A4 com a moldura do Convida. */
+export async function downloadFormQr(formId: number, kind: "png" | "pdf", filename: string) {
+  saveBlob(await fetchAuthenticatedBlob(`/forms/${formId}/qr.${kind}`), filename);
+}
+
+/** Pré-visualização do QR (PNG) como object URL — chame `URL.revokeObjectURL` ao descartar. */
+export function useFormQrPreview(formId: number, enabled: boolean) {
+  return useQuery({
+    queryKey: ["forms", formId, "qr-preview"],
+    queryFn: async () => URL.createObjectURL(await fetchAuthenticatedBlob(`/forms/${formId}/qr.png`)),
+    enabled: enabled && Number.isFinite(formId),
+    staleTime: Infinity,
+    gcTime: 0,
+  });
 }
 
 // --------------------------------------------------------------- público

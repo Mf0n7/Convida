@@ -58,6 +58,8 @@ respostas individuais e exportação CSV).
   (`/formulario/<share_token>`) responde.
 - Limites: 10 formulários por evento, 20 avulsos por usuário, 50 perguntas por formulário,
   30 opções por pergunta. Escrita anônima passa pelo mesmo rate limit do RSVP.
+- **QR code** do link público: `GET /api/v1/forms/<id>/qr.png` (código limpo, ~1024 px) e
+  `GET /api/v1/forms/<id>/qr.pdf` (A4 com moldura do Convida e título). Botão "QR code" no construtor.
 - API: `GET/POST /api/v1/forms/`, `/api/v1/events/<uuid>/forms/`, `/api/v1/forms/<id>/`
   (`status/`, `duplicate/`, `report/`, `responses/`, `export/`) e rotas públicas
   `/api/v1/public/forms/<share_token>/` e `/api/v1/public/<token>/forms/`.
